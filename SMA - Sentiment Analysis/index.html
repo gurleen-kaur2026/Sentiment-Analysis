@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Comment Scraper</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fab fa-youtube"></i>
+                <h1>YouTube Comment Scraper</h1>
+            </div>
+            <p class="subtitle">Extract and analyze comments from any YouTube video</p>
+        </header>
+
+        <main class="main">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="videoUrl">YouTube Video URL</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="url" 
+                            id="videoUrl" 
+                            placeholder="https://www.youtube.com/watch?v=..."
+                            value="https://www.youtube.com/watch?v=9bZkp7q19f0"
+                        >
+                        <button id="fetchBtn" class="fetch-btn">
+                            <i class="fas fa-search"></i>
+                            Fetch Comments
+                        </button>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <div class="option-group">
+                        <label for="maxComments">Max Comments</label>
+                        <select id="maxComments">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="sortBy">Sort By</label>
+                        <select id="sortBy">
+                            <option value="relevance">Relevance</option>
+                            <option value="time">Time</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-section" id="loadingSection" style="display: none;">
+                <div class="spinner"></div>
+                <p>Fetching comments...</p>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>Comments Analysis</h2>
+                    <div class="stats">
+                        <span id="commentCount">0</span> comments
+                    </div>
+                </div>
+
+                <!-- Sentiment Analysis Dashboard -->
+                <div class="sentiment-dashboard" id="sentimentDashboard" style="display: none;">
+                    <div class="dashboard-header">
+                        <h3>📊 Sentiment Analysis Dashboard</h3>
+                        <div class="overall-sentiment" id="overallSentiment">
+                            <!-- Overall sentiment will be displayed here -->
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- Sentiment Distribution Chart -->
+                        <div class="dashboard-card chart-card">
+                            <h4>📈 Sentiment Distribution</h4>
+                            <div class="sentiment-chart" id="sentimentChart">
+                                <!-- Chart will be rendered here -->
+                            </div>
+                        </div>
+
+                        <!-- Sentiment Metrics -->
+                        <div class="dashboard-card metrics-card">
+                            <h4>📊 Sentiment Metrics</h4>
+                            <div class="metrics-grid" id="sentimentMetrics">
+                                <!-- Metrics will be displayed here -->
+                            </div>
+                        </div>
+
+                        <!-- Interactive Word Cloud -->
+                        <div class="dashboard-card word-cloud-card">
+                            <h4>☁️ Word Frequency Analysis</h4>
+                            <div class="word-cloud-container">
+                                <div class="word-cloud" id="wordCloud">
+                                    <!-- Word cloud will be displayed here -->
+                                </div>
+                                <div class="word-cloud-controls">
+                                    <button class="cloud-btn" data-size="small">Small</button>
+                                    <button class="cloud-btn active" data-size="medium">Medium</button>
+                                    <button class="cloud-btn" data-size="large">Large</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Insights -->
+                        <div class="dashboard-card insights-card">
+                            <h4>🤖 AI Insights</h4>
+                            <div class="insights-list" id="insightsList">
+                                <!-- Insights will be displayed here -->
+                            </div>
+                        </div>
+
+                        <!-- Sentiment Timeline -->
+                        <div class="dashboard-card timeline-card">
+                            <h4>⏰ Sentiment Timeline</h4>
+                            <div class="timeline-container" id="sentimentTimeline">
+                                <!-- Timeline will be displayed here -->
+                            </div>
+                        </div>
+
+                        <!-- Emotion Analysis -->
+                        <div class="dashboard-card emotion-card">
+                            <h4>😊 Emotion Analysis</h4>
+                            <div class="emotion-chart" id="emotionChart">
+                                <!-- Emotion chart will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments with Sentiment -->
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h3>Comments with Sentiment Analysis</h3>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="positive">😊 Positive</button>
+                            <button class="filter-btn" data-filter="negative">😔 Negative</button>
+                            <button class="filter-btn" data-filter="neutral">😐 Neutral</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comments-container" id="commentsContainer">
+                        <!-- Comments will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <button id="exportBtn" class="export-btn">
+                        <i class="fas fa-download"></i>
+                        Export Analysis to CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="error-section" id="errorSection" style="display: none;">
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText"></span>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Built with ❤️ for YouTube data analysis</p>
+        </footer>
+    </div>
+
+    </div>
+
+    <!-- Modal for Details -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalContent">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
